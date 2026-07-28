@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/theme.dart';
 import '../widgets/cyber_card.dart';
 import 'contacts.dart';
+import 'device_audit.dart';
 import 'lens.dart';
 import 'media.dart';
 import 'messages.dart';
@@ -20,6 +21,7 @@ class AppsHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final apps = <_AppItem>[
       _AppItem('NET', 'Сканер Wi-Fi', Icons.wifi_find, SentinelTheme.green, const ScannerScreen()),
+      _AppItem('DEVICES', 'Мои устройства', Icons.devices_other_outlined, SentinelTheme.cyan, const DeviceAuditScreen()),
       _AppItem('LENS', 'Камера и кадры', Icons.camera_alt_outlined, SentinelTheme.cyan, const LensScreen()),
       _AppItem('MEDIA', 'Музыка', Icons.graphic_eq, SentinelTheme.violet, const MediaScreen()),
       _AppItem('CHAT', 'Заметки', Icons.forum_outlined, SentinelTheme.green, const MessagesScreen()),

@@ -21,7 +21,8 @@ class _ToolsScreenState extends State<ToolsScreen> {
   }}
   @override Widget build(BuildContext context)=>ListView(padding:const EdgeInsets.all(16),children:[
     const Text('MINI TOOLS',style:TextStyle(fontSize:21,fontWeight:FontWeight.bold,color:SentinelTheme.green)),
-    const SizedBox(height:6),const Text('Безопасные локальные проверки — без доступа к чужим данным.'),const SizedBox(height:16),
+    const SizedBox(height:6),const Text('Безопасные локальные проверки — без доступа к чужим данным. Аудит Wi-Fi и телефона — в «Мои устройства».'),
+    const SizedBox(height:16),
     SegmentedButton<int>(segments:const [ButtonSegment(value:0,label:Text('Пароль'),icon:Icon(Icons.key_outlined)),ButtonSegment(value:1,label:Text('Хеш'),icon:Icon(Icons.tag)),ButtonSegment(value:2,label:Text('Домен'),icon:Icon(Icons.language))],selected:{_tab},onSelectionChanged:(v)=>setState(()=>_tab=v.first)),
     const SizedBox(height:14),CyberCard(title:_tab==0?'PASSWORD LAB':_tab==1?'TEXT FINGERPRINT':'DOMAIN CHECK',accent:SentinelTheme.green,child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[TextField(controller:_text,obscureText:_tab==0,style:const TextStyle(color:SentinelTheme.cyan),decoration:InputDecoration(hintText:_tab==0?'Введи пароль для оценки':_tab==1?'Любой текст':'example.com',border:const OutlineInputBorder())),const SizedBox(height:12),GlowButton(label:'ЗАПУСТИТЬ',icon:Icons.play_arrow,color:SentinelTheme.green,onPressed:_run),const SizedBox(height:15),Text(_result,style:const TextStyle(color:SentinelTheme.cyan,fontSize:14,fontWeight:FontWeight.bold))]))
   ]);
