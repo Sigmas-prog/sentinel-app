@@ -26,7 +26,10 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   mobile_scanner: ^5.2.3
   qr_flutter: ^4.1.0
-  file_picker: ^8.1.7
+  # 10.3.3+ inherits Flutter's compileSdk instead of hard-coding API 34.
+  # Keep this on the latest non-breaking 10.x line because 11.x changes
+  # FilePicker calls from instance methods to static methods.
+  file_picker: ^10.3.11
   connectivity_plus: ^6.1.1
 
 dev_dependencies:
