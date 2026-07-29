@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../utils/theme.dart';
 import '../widgets/animated_grid.dart';
@@ -8,6 +9,18 @@ import 'lens.dart';
 import 'scanner.dart';
 import 'terminal.dart';
 import 'tools.dart';
+import 'archive.dart';
+import 'pulse.dart';
+import 'compass.dart';
+import 'file_lab.dart';
+import 'notes.dart';
+import 'permissions_center.dart';
+import 'qr_lab.dart';
+import 'sensors.dart';
+import 'signal.dart';
+import 'vault.dart';
+import 'clipboard_lab.dart';
+import 'time_lab.dart';
 
 class AppsHubScreen extends StatelessWidget {
   const AppsHubScreen({super.key});
@@ -57,6 +70,90 @@ class AppsHubScreen extends StatelessWidget {
         color: SentinelTheme.magenta,
         screen: ToolsScreen(),
       ),
+      _HubModule(
+        label: 'PULSE',
+        subtitle: 'LINK TEST',
+        icon: Icons.monitor_heart_outlined,
+        color: SentinelTheme.green,
+        screen: PulseScreen(),
+      ),
+      _HubModule(
+        label: 'ARCHIVE',
+        subtitle: 'DEDSEC MEDIA',
+        icon: Icons.photo_library_outlined,
+        color: SentinelTheme.cyan,
+        screen: ArchiveScreen(),
+      ),
+      _HubModule(
+        label: 'SENSORS',
+        subtitle: 'MOTION LIVE',
+        icon: Icons.sensors,
+        color: SentinelTheme.magenta,
+        screen: SensorsScreen(),
+      ),
+      _HubModule(
+        label: 'VAULT',
+        subtitle: 'SECURE NOTE',
+        icon: Icons.enhanced_encryption_outlined,
+        color: SentinelTheme.green,
+        screen: VaultScreen(),
+      ),
+      _HubModule(
+        label: 'NOTES',
+        subtitle: 'LOCAL LOG',
+        icon: Icons.edit_note,
+        color: SentinelTheme.cyan,
+        screen: NotesScreen(),
+      ),
+      _HubModule(
+        label: 'QR LAB',
+        subtitle: 'SCAN + BUILD',
+        icon: Icons.qr_code_scanner,
+        color: SentinelTheme.magenta,
+        screen: QrLabScreen(),
+      ),
+      _HubModule(
+        label: 'FILES',
+        subtitle: 'LOCAL INSPECT',
+        icon: Icons.folder_open,
+        color: SentinelTheme.green,
+        screen: FileLabScreen(),
+      ),
+      _HubModule(
+        label: 'COMPASS',
+        subtitle: 'MAG VECTOR',
+        icon: Icons.explore_outlined,
+        color: SentinelTheme.cyan,
+        screen: CompassScreen(),
+      ),
+      _HubModule(
+        label: 'SIGNAL',
+        subtitle: 'LINK WATCH',
+        icon: Icons.cell_tower,
+        color: SentinelTheme.magenta,
+        screen: SignalScreen(),
+      ),
+      _HubModule(
+        label: 'PERMISSIONS',
+        subtitle: 'ACCESS CTRL',
+        icon: Icons.admin_panel_settings_outlined,
+        color: SentinelTheme.green,
+        screen: PermissionsCenterScreen(),
+      ),
+      _HubModule(
+        label: 'TIME',
+        subtitle: 'CLOCK + TIMER',
+        icon: Icons.timer_outlined,
+        color: SentinelTheme.cyan,
+        screen: TimeLabScreen(),
+      ),
+      _HubModule(
+        label: 'CLIPBOARD',
+        subtitle: 'LOCAL BUFFER',
+        icon: Icons.content_paste_search,
+        color: SentinelTheme.magenta,
+        screen: ClipboardLabScreen(),
+      ),
     ];
 
     return PixelGridBackground(
@@ -69,7 +166,9 @@ class AppsHubScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const _StatusBar(),
-                const SizedBox(height: 28),
+                const SizedBox(height: 14),
+                const _DedsecHero(),
+                const SizedBox(height: 14),
                 const Text(
                   'MARCUS // HUB',
                   style: TextStyle(
@@ -88,7 +187,7 @@ class AppsHubScreen extends StatelessWidget {
                     letterSpacing: 1.4,
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 14),
                 Expanded(
                   child: GridView.builder(
                     physics: const BouncingScrollPhysics(),
@@ -98,7 +197,7 @@ class AppsHubScreen extends StatelessWidget {
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
-                      childAspectRatio: 1,
+                      childAspectRatio: 1.08,
                     ),
                     itemBuilder: (context, index) => _HubTile(
                       module: modules[index],
@@ -127,6 +226,115 @@ class AppsHubScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _DedsecHero extends StatefulWidget {
+  const _DedsecHero();
+
+  @override
+  State<_DedsecHero> createState() => _DedsecHeroState();
+}
+
+class _DedsecHeroState extends State<_DedsecHero>
+    with SingleTickerProviderStateMixin {
+  static const _logo =
+      'https://staticctf.ubisoft.com/J3yJr34U2pZ2Ieem48Dwy9uqj5PNUQTn/'
+      'ddbVCPckfGhyyTPslkj34/98645030244a2eea96ec23329a146a94/'
+      'wd2-ubicom-hero-logo-stacked-white.png';
+
+  late final AnimationController _glitch = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2400),
+  )..repeat();
+
+  @override
+  void dispose() {
+    _glitch.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _glitch,
+      builder: (context, child) {
+        final phase = _glitch.value;
+        final shift = phase > 0.78 && phase < 0.84 ? 4.0 : 0.0;
+        return Container(
+          height: 78,
+          width: double.infinity,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.72),
+            border: Border.all(
+              color: SentinelTheme.magenta.withValues(
+                alpha: 0.38 + phase * 0.34,
+              ),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: SentinelTheme.magenta.withValues(alpha: 0.16),
+                blurRadius: 14,
+              ),
+            ],
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Transform.translate(
+                offset: Offset(shift, 0),
+                child: CachedNetworkImage(
+                  imageUrl: _logo,
+                  fit: BoxFit.contain,
+                  alignment: Alignment.centerLeft,
+                  placeholder: (context, url) => const Center(
+                    child: Text(
+                      'DEDSEC // LINKING...',
+                      style: TextStyle(color: SentinelTheme.green, fontSize: 9),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'DEDSEC // OFFLINE CACHE',
+                        style: TextStyle(
+                          color: SentinelTheme.cyan,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                top: phase * 92 - 8,
+                child: Container(
+                  height: 3,
+                  color: SentinelTheme.cyan.withValues(alpha: 0.65),
+                ),
+              ),
+              const Positioned(
+                right: 10,
+                bottom: 8,
+                child: Text(
+                  'FAN HUB // v3.0',
+                  style: TextStyle(
+                    color: SentinelTheme.green,
+                    fontSize: 8,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

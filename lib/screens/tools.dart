@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/theme.dart';
@@ -18,8 +20,10 @@ class ToolsScreen extends StatefulWidget {
 class _ToolsScreenState extends State<ToolsScreen> {
   final _password = TextEditingController();
   final _hashInput = TextEditingController();
+  final _base64Input = TextEditingController();
   int _score = 0;
   String _hash = '00000000';
+  String _base64Output = '';
   bool _obscure = true;
 
   @override
@@ -61,10 +65,40 @@ class _ToolsScreenState extends State<ToolsScreen> {
     await prefs.setString('fnv_hash', result);
   }
 
+  void _encodeBase64() {
+    setState(() => _base64Output = base64Encode(utf8.encode(_base64Input.text)));
+  }
+
+  void _decodeBase64() {
+    try {
+      setState(
+        () => _base64Output = utf8.decode(base64Decode(_base64Input.text)),
+      );
+    } on FormatException {
+      setState(() => _base64Output = 'INVALID BASE64 DATA');
+    }
+  }
+
+  void _generatePassword() {
+    const alphabet =
+        'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#\$%^&*_-+=';
+    final random = Random.secure();
+    final password =
+        List.generate(18, (_) => alphabet[random.nextInt(alphabet.length)])
+            .join();
+    _password.text = password;
+    _checkPassword();
+    Clipboard.setData(ClipboardData(text: password));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('PASSWORD GENERATED // COPIED')),
+    );
+  }
+
   @override
   void dispose() {
     _password.dispose();
     _hashInput.dispose();
+    _base64Input.dispose();
     super.dispose();
   }
 
@@ -137,6 +171,13 @@ class _ToolsScreenState extends State<ToolsScreen> {
                   'Проверяется: 12+ символов, нижний и верхний регистр, цифры, спецсимволы. Пароль никуда не отправляется и не сохраняется.',
                   style: TextStyle(color: SentinelTheme.muted, fontSize: 10),
                 ),
+                const SizedBox(height: 12),
+                GlowButton(
+                  label: 'GENERATE 18 CHAR + COPY',
+                  icon: Icons.password,
+                  color: SentinelTheme.magenta,
+                  onPressed: _generatePassword,
+                ),
               ],
             ),
           ),
@@ -181,6 +222,66 @@ class _ToolsScreenState extends State<ToolsScreen> {
                 const SizedBox(height: 8),
                 const Text(
                   'FNV-1a — быстрый не криптографический хеш. Не используй его для хранения паролей.',
+                  style: TextStyle(color: SentinelTheme.muted, fontSize: 10),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          CyberCard(
+            title: 'BASE64 // ENCODE + DECODE',
+            accent: SentinelTheme.green,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: _base64Input,
+                  minLines: 2,
+                  maxLines: 5,
+                  style: const TextStyle(color: SentinelTheme.text),
+                  decoration: const InputDecoration(
+                    hintText: 'Текст или Base64-строка',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GlowButton(
+                        label: 'ENCODE',
+                        icon: Icons.lock_outline,
+                        color: SentinelTheme.green,
+                        onPressed: _encodeBase64,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: GlowButton(
+                        label: 'DECODE',
+                        icon: Icons.lock_open,
+                        color: SentinelTheme.cyan,
+                        onPressed: _decodeBase64,
+                      ),
+                    ),
+                  ],
+                ),
+                if (_base64Output.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    color: Colors.black,
+                    child: SelectableText(
+                      _base64Output,
+                      style: const TextStyle(
+                        color: SentinelTheme.green,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                const Text(
+                  'Base64 — кодирование, а не шифрование. Всё выполняется только на телефоне.',
                   style: TextStyle(color: SentinelTheme.muted, fontSize: 10),
                 ),
               ],

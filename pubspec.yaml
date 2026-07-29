@@ -1,10 +1,10 @@
 name: sentinel_app
 description: Interactive Marcus-style cyber hub with real Android device data.
 publish_to: "none"
-version: 2.0.0+2
+version: 3.0.0+4
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -21,6 +21,13 @@ dependencies:
   image_picker: ^1.1.2
   audioplayers: ^6.1.0
   shared_preferences: ^2.3.4
+  cached_network_image: ^3.4.1
+  sensors_plus: ^5.0.1
+  flutter_secure_storage: ^9.2.4
+  mobile_scanner: ^5.2.3
+  qr_flutter: ^4.1.0
+  file_picker: ^8.1.7
+  connectivity_plus: ^6.1.1
 
 dev_dependencies:
   flutter_test:
@@ -30,7 +37,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/icons/sentinel_icon.png
+    - assets/icons/sentinel_icon.svg
   fonts:
     - family: SentinelMono
       fonts:
