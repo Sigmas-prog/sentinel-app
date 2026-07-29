@@ -1,17 +1,84 @@
+import 'dart:async';
 import 'dart:io';
-import 'system_info.dart';
-import 'wifi_scanner.dart';
+
 class TerminalService {
-  TerminalService(this._system, this._wifi); final SystemInfoService _system; final WifiScannerService _wifi;
+  static const _safeCatFiles = {
+    'version': '/proc/version',
+    'meminfo': '/proc/meminfo',
+    'uptime': '/proc/uptime',
+    'cpuinfo': '/proc/cpuinfo',
+  };
+
+  static const _safeListPaths = {
+    '/': '/',
+    '/system': '/system',
+    '/system/bin': '/system/bin',
+    '/proc': '/proc',
+  };
+
   Future<String> execute(String source) async {
-    final parts = source.trim().split(RegExp(r'\\s+')); if (parts.isEmpty || parts.first.isEmpty) return '';
-    switch (parts.first.toLowerCase()) {
-      case 'help': return 'help — команды\\nscan — список Wi-Fi\\nshowip — сетевые данные\\ntest — проверка соединения\\nping <адрес> — DNS-проверка';
-      case 'scan': final items = await _wifi.scan(); return items.isEmpty ? 'Сети не найдены.' : items.take(12).map((n) => '${n.ssid} | ${n.level} | ch ${n.channel}').join('\\n');
-      case 'showip': final s = await _system.read(); return 'IP: ${s.ip}\\nWi-Fi: ${s.wifiName}\\nУстройство: ${s.device}';
-      case 'test': try { final r = await InternetAddress.lookup('one.one.one.one'); return r.isNotEmpty ? 'Канал доступен: ${r.first.address}' : 'Нет ответа'; } catch (_) { return 'Соединение недоступно'; }
-      case 'ping': if (parts.length < 2) return 'Использование: ping <адрес>'; try { final r = await InternetAddress.lookup(parts[1]); return 'DNS: ${parts[1]} → ${r.first.address}'; } catch (_) { return 'Адрес не найден'; }
-      default: return 'Неизвестная команда: ${parts.first}. Введите help.';
+    final parts = source.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return '';
+
+    final command = parts.first.toLowerCase();
+    switch (command) {
+      case 'help':
+        return 'AVAILABLE COMMANDS\n'
+            'ping <host>   network reachability\n'
+            'ls [path]     list /, /system, /system/bin or /proc\n'
+            'cat <file>    version, meminfo, cpuinfo or uptime\n'
+            'echo <text>   print local text\n'
+            'ifconfig      Android network interfaces\n'
+            'clear         clear terminal';
+      case 'ping':
+        if (parts.length != 2 || !_validHost(parts[1])) {
+          return 'USAGE: ping example.com';
+        }
+        return _process('ping', ['-c', '4', parts[1]]);
+      case 'ls':
+        final requested = parts.length > 1 ? parts[1] : '/system/bin';
+        final path = _safeListPaths[requested];
+        if (path == null) {
+          return 'PATH BLOCKED. AVAILABLE: ${_safeListPaths.keys.join(', ')}';
+        }
+        return _process('ls', ['-la', path]);
+      case 'cat':
+        if (parts.length != 2 || !_safeCatFiles.containsKey(parts[1])) {
+          return 'USAGE: cat version|meminfo|cpuinfo|uptime';
+        }
+        return _process('cat', [_safeCatFiles[parts[1]]!]);
+      case 'echo':
+        return parts.skip(1).join(' ');
+      case 'ifconfig':
+        return _process('ifconfig', const []);
+      case 'clear':
+        return '__CLEAR__';
+      default:
+        return 'COMMAND NOT FOUND: $command\nTYPE help';
+    }
+  }
+
+  bool _validHost(String host) =>
+      RegExp(r'^[a-zA-Z0-9.-]{1,253}$').hasMatch(host);
+
+  Future<String> _process(String executable, List<String> arguments) async {
+    try {
+      final result = await Process.run(
+        executable,
+        arguments,
+        runInShell: false,
+      ).timeout(const Duration(seconds: 16));
+      final output = result.stdout.toString().trim();
+      final error = result.stderr.toString().trim();
+      final combined = [output, error].where((line) => line.isNotEmpty).join('\n');
+      if (combined.isEmpty) return 'EXIT ${result.exitCode} // NO OUTPUT';
+      return combined.length > 12000 ? combined.substring(0, 12000) : combined;
+    } on ProcessException catch (error) {
+      return '$executable IS NOT AVAILABLE ON THIS ANDROID BUILD\n$error';
+    } on TimeoutException {
+      return '$executable TIMEOUT';
+    } catch (error) {
+      return '$executable ERROR: $error';
     }
   }
 }

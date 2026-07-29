@@ -1,26 +1,73 @@
 import 'package:flutter/material.dart';
 
 class SentinelTheme {
-  static const background = Color(0xFF061018);
-  static const panel = Color(0xDD0B1D29);
-  static const cyan = Color(0xFF29D9FF);
-  static const green = Color(0xFF49F2A5);
-  static const violet = Color(0xFFB98CFF);
-  static const muted = Color(0xFF8BA5B3);
+  static const background = Color(0xFF020609);
+  static const panel = Color(0xE6081117);
+  static const cyan = Color(0xFF00FFCC);
+  static const magenta = Color(0xFFFF00FF);
+  static const green = Color(0xFF00FF88);
+  static const warning = Color(0xFFFFB800);
+  static const muted = Color(0xFF7EA39F);
+  static const text = Color(0xFFE4FFF9);
 
   static ThemeData get data => ThemeData(
+        useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: background,
+        scaffoldBackgroundColor: Colors.transparent,
         fontFamily: 'SentinelMono',
+        splashFactory: NoSplash.splashFactory,
         colorScheme: const ColorScheme.dark(
           primary: cyan,
-          secondary: green,
+          secondary: magenta,
+          tertiary: green,
           surface: panel,
+          error: Color(0xFFFF4567),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: false,
+          titleTextStyle: TextStyle(
+            color: cyan,
+            fontFamily: 'SentinelMono',
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.2,
+          ),
+          iconTheme: IconThemeData(color: cyan),
         ),
         textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Color(0xFFD6F5FF)),
-          bodySmall: TextStyle(color: muted),
-          titleMedium: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1),
+          bodyLarge: TextStyle(color: text, height: 1.35),
+          bodyMedium: TextStyle(color: text, height: 1.35),
+          bodySmall: TextStyle(color: muted, height: 1.3),
+          titleLarge: TextStyle(
+            color: cyan,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.8,
+          ),
+          titleMedium: TextStyle(
+            color: text,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.1,
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xCC020609),
+          hintStyle: const TextStyle(color: muted),
+          labelStyle: const TextStyle(color: cyan),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0x6600FFCC)),
+            borderRadius: BorderRadius.zero,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: cyan, width: 1.5),
+            borderRadius: BorderRadius.zero,
+          ),
+          errorBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFFFF4567)),
+            borderRadius: BorderRadius.zero,
+          ),
         ),
       );
 }
