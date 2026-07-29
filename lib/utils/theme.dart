@@ -51,20 +51,20 @@ class SentinelTheme {
             letterSpacing: 1.1,
           ),
         ),
-        inputDecorationTheme: InputDecorationTheme(
+        inputDecorationTheme: const InputDecorationTheme(
           filled: true,
-          fillColor: const Color(0xCC020609),
-          hintStyle: const TextStyle(color: muted),
-          labelStyle: const TextStyle(color: cyan),
-          enabledBorder: const OutlineInputBorder(
+          fillColor: Color(0xCC020609),
+          hintStyle: TextStyle(color: muted),
+          labelStyle: TextStyle(color: cyan),
+          enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0x6600FFCC)),
             borderRadius: BorderRadius.zero,
           ),
-          focusedBorder: const OutlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: cyan, width: 1.5),
             borderRadius: BorderRadius.zero,
           ),
-          errorBorder: const OutlineInputBorder(
+          errorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color(0xFFFF4567)),
             borderRadius: BorderRadius.zero,
           ),

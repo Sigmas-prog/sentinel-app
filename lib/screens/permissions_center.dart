@@ -83,10 +83,10 @@ class _PermissionsCenterScreenState extends State<PermissionsCenterScreen> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          CyberCard(
+          const CyberCard(
             title: 'ACCESS POLICY',
             accent: SentinelTheme.cyan,
-            child: const Text(
+            child: Text(
               'Sentinel запрашивает доступ только после нажатия. Разрешения нужны камере, QR-сканеру, Wi-Fi и геолокации.',
             ),
           ),
@@ -128,7 +128,7 @@ class _PermissionsCenterScreenState extends State<PermissionsCenterScreen> {
             ),
             const SizedBox(height: 10),
           ],
-          GlowButton(
+          const GlowButton(
             label: 'OPEN ANDROID SETTINGS',
             icon: Icons.settings,
             color: SentinelTheme.magenta,

@@ -40,7 +40,8 @@ class _QrLabScreenState extends State<QrLabScreen> {
       }
     }
     if (value == null || value == _scanned) return;
-    setState(() => _scanned = value);
+    final scannedValue = value;
+    setState(() => _scanned = scannedValue);
     HapticFeedback.mediumImpact();
   }
 
